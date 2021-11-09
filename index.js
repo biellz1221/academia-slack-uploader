@@ -109,6 +109,6 @@ app.message("upload", async ({ command, payload, say }) => {
 });
 
 (async () => {
-	await app.start();
+	await app.start(process.env.PORT);
 	console.log("⚡️ Bolt app started");
 })();
