@@ -1,6 +1,7 @@
 const { App } = require("@slack/bolt");
 const stream = require("stream");
 const { promisify } = require("util");
+const express = require("express");
 require("dotenv").config();
 
 // const AWS = require("aws-sdk");
@@ -18,6 +19,12 @@ const app = new App({
 	token: process.env.SLACK_OAUTH_TOKEN,
 	signingSecret: process.env.SLACK_SIGNING_SECRET,
 	appToken: process.env.SLACK_SOCKET_TOKEN,
+});
+
+const exapp = express();
+
+exapp.get("/", (req, res) => {
+	res.send("Hello World!");
 });
 
 app.command("/olar", async ({ command, ack, say }) => {
@@ -112,3 +119,7 @@ app.message("upload", async ({ command, payload, say }) => {
 	await app.start(process.env.PORT);
 	console.log("⚡️ Bolt app started");
 })();
+
+exapp.listen(process.env.PORT, () => {
+	console.log(`ExApp listening`);
+});
