@@ -88,7 +88,7 @@ app.message("upload", async ({ payload, say }) => {
 	// console.log("================= Payload =================");
 	// console.log(payload);
 	// console.log("================= End Payload =================");
-
+	if (!payload.files.length) return;
 	say("Iniciando upload...");
 
 	try {
