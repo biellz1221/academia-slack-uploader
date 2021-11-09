@@ -3,16 +3,25 @@ const stream = require("stream");
 const { promisify } = require("util");
 const express = require("express");
 require("dotenv").config();
-
-// const AWS = require("aws-sdk");
 const got = require("got");
 var slugify = require("slugify");
-const { createWriteStream, createReadStream, unlink } = require("fs");
-
-const { listMaterials, uploadMaterial } = require("./bucketManipulation");
-const { extensionExtractor, generateLink } = require("./utils");
-
 const pipeline = promisify(stream.pipeline);
+const {
+	createWriteStream, //
+	createReadStream,
+	unlink,
+} = require("fs");
+
+const {
+	listMaterials, //
+	uploadMaterial,
+} = require("./bucketManipulation");
+const {
+	extensionExtractor, //
+	generateLink,
+	returnEmoji,
+	returnFilter,
+} = require("./utils");
 
 const app = new App({
 	socketMode: true,
@@ -27,17 +36,9 @@ exapp.get("/", (req, res) => {
 	res.send("Hello World!");
 });
 
-app.command("/olar", async ({ command, ack, say }) => {
+app.command("/olar", async ({ ack, say }) => {
 	try {
 		await ack();
-		// const buckets = await S3.listBuckets().promise();
-		// console.log(buckets);
-		// let txt = command.text; // The inputted parameters
-		//   if(isNaN(txt)) {
-		//       say(txt + " is not a number")
-		//   } else {
-		//       say(txt + " squared = " + (parseFloat(txt) * parseFloat(txt)))
-		//   }
 		say(`olar`);
 	} catch (error) {
 		console.log("err");
@@ -51,62 +52,81 @@ app.command("/listar-materiais", async ({ command, ack, say }) => {
 
 		const materiais = await listMaterials(process.env.AWS_BUCKET_NAME);
 
-		materiais.objectsArray.map((material) => {
-			say(`
-                Material: ${extensionExtractor(material.Key).name}\nLink: ${generateLink(material.Key)}
-            `);
-		});
+		if (!command.text) {
+			say(">📂 *Carregando lista de materiais*");
+			return materiais.objectsArray.map((material) => {
+				let materialInfo = extensionExtractor(material.Key);
+
+				say(`
+					${returnEmoji(materialInfo.extension)} ${materialInfo.extension}\n🏷️ ${materialInfo.name}\n🔗 ${generateLink(material.Key)}\n\n
+				`);
+			});
+		}
+
+		let filter = returnFilter(command.text);
+
+		if (filter) {
+			say(">📂 *Carregando lista de materiais*");
+			return materiais.objectsArray
+				.filter((material) => filter.includes(extensionExtractor(material.Key).extension))
+				.map((material) => {
+					let materialInfo = extensionExtractor(material.Key);
+
+					say(`
+						${returnEmoji(materialInfo.extension)} *${materialInfo.extension}*\n🏷️ *${materialInfo.name}*\n🔗 ${generateLink(material.Key)}\n\n
+					`);
+				});
+		}
+		return say("Não entendi esse filtro. Os filtros possíves são: pdf, documento, imagem, audio, video");
 	} catch (error) {
 		console.log("err");
 		console.error(error);
 	}
 });
 
-app.message("upload", async ({ command, payload, say }) => {
-	// Replace hello with the message
-
+app.message("upload", async ({ payload, say }) => {
 	// console.log("================= Payload =================");
 	// console.log(payload);
 	// console.log("================= End Payload =================");
 
-	const fileInfo = extensionExtractor(payload.files[0].name);
-
 	say("Iniciando upload...");
 
-	// let stream = null;
-
 	try {
-		// const stream =
-
 		const uploadOptions = {
 			Bucket: process.env.AWS_BUCKET_NAME,
-			Key: `${slugify(fileInfo.name)}.${fileInfo.extension}`,
 			ACL: "public-read",
-			ContentType: payload.files[0].mimetype,
-			// Body: file,
-			// ContentLength: payload.files[0].size,
 		};
 
-		// say("Enviando arquivo para o servidor");
+		await Promise.all(
+			payload.files.map(async (file) => {
+				const fileInfo = extensionExtractor(file.name);
 
-		await pipeline(
-			got.stream(payload.files[0].url_private_download, {
-				headers: {
-					"Authorization": `Bearer ${process.env.SLACK_OAUTH_TOKEN}`,
-				},
-			}),
-			createWriteStream(`${slugify(fileInfo.name)}.${fileInfo.extension}`)
+				await pipeline(
+					got.stream(file.url_private_download, {
+						headers: {
+							"Authorization": `Bearer ${process.env.SLACK_OAUTH_TOKEN}`,
+						},
+					}),
+					createWriteStream(`${slugify(fileInfo.name).toLowerCase()}.${fileInfo.extension}`)
+				);
+
+				const uploadedFile = await uploadMaterial({
+					...uploadOptions,
+					Body: createReadStream(`${slugify(fileInfo.name)}.${fileInfo.extension}`),
+					ContentType: file.mimetype,
+					Key: `${slugify(fileInfo.name)}.${fileInfo.extension}`,
+				});
+
+				say(`🏷️ *${slugify(uploadedFile.Key)}*\n🔗 ${uploadedFile.Location}`);
+
+				unlink(`${slugify(fileInfo.name)}.${fileInfo.extension}`, (err) => {
+					if (err) throw err;
+					console.log(`${slugify(fileInfo.name)}.${fileInfo.extension} apagado com sucesso`);
+				});
+			})
 		);
-		const uploadedFile = await uploadMaterial({
-			...uploadOptions,
-			Body: createReadStream(`${slugify(fileInfo.name)}.${fileInfo.extension}`),
-		});
-		say("Arquivo enviado com sucesso");
-		say(`Material: ${slugify(fileInfo.name)}\nLink: ${uploadedFile.Location}`);
-		return unlink(`${slugify(fileInfo.name)}.${fileInfo.extension}`, (err) => {
-			if (err) throw err;
-			console.log(`${slugify(fileInfo.name)}.${fileInfo.extension} apagado com sucesso`);
-		});
+
+		return say("👍 Tarefa completada com sucesso ✅");
 	} catch (error) {
 		say("Deu erro");
 		say(error.toString());
