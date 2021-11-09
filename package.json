@@ -1,0 +1,39 @@
+{
+	"name": "academia-slack-uploader",
+	"version": "1.0.0",
+	"description": "Uploader Bot para materiais da Academia do Autismo",
+	"main": "index.js",
+	"scripts": {
+		"test": "jest",
+		"start": "nodemon index.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/biellz1221/academia-slack-uploader.git"
+	},
+	"keywords": [
+		"slack",
+		"bot",
+		"uploader",
+		"aws",
+		"s3",
+		"node",
+		"javascript"
+	],
+	"author": "Gabriel Baptista",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/biellz1221/academia-slack-uploader/issues"
+	},
+	"homepage": "https://github.com/biellz1221/academia-slack-uploader#readme",
+	"dependencies": {
+		"@slack/bolt": "^3.8.1",
+		"aws-sdk": "^2.1024.0",
+		"dotenv": "^10.0.0",
+		"got": "^11.8.2",
+		"slugify": "^1.6.2"
+	},
+	"devDependencies": {
+		"nodemon": "^2.0.14"
+	}
+}
