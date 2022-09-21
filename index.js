@@ -145,8 +145,12 @@ app.command("/aluno", async ({ command, ack, say }) => {
 
 		say(`user: ${user.nome}, ${user.email}, ${user.isAluno}, ${user.isAssinante}`);
 	} catch (error) {
-		say("Houve um erro");
-		console.log(error);
+		console.error("STATUS CODE:", error.response.statusCode);
+		if (error.response.statusCode === 404) {
+			say("Este email não correspode a um usuário");
+		} else {
+			say("Houve um erro");
+		}
 	}
 });
 
