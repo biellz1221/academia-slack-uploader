@@ -132,14 +132,15 @@ app.command("/aluno", async ({ command, ack, say }) => {
 	try {
 		await ack();
 		console.log("command", command);
-		// if (!checkEmail(email)) {
-		// 	say("Por favor informe um email válido");
-		// }
-		// let user = await got(`https://nossomundoazul.com.br/api/usuarios/busca-aluno-publico/?email=${email}`);
+		const email = command.text;
+		if (!checkEmail(email)) {
+			say("Por favor informe um email válido");
+		}
+		const user = await got(`https://nossomundoazul.com.br/api/usuarios/busca-aluno-publico/?email=${email}`);
 
-		// console.log(user);
+		console.log(user);
 
-		// say(`user: ${user.nome}, ${user.email}, ${user.isAluno}, ${user.isAssinante}`);
+		say(`user: ${user.nome}, ${user.email}, ${user.isAluno}, ${user.isAssinante}`);
 	} catch (error) {
 		say("Houve um erro");
 		console.log(error);
