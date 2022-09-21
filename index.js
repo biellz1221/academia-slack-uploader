@@ -1,7 +1,7 @@
 const { App } = require("@slack/bolt");
 const stream = require("stream");
 const { promisify } = require("util");
-// const express = require("express");
+
 require("dotenv").config();
 const got = require("got");
 var slugify = require("slugify");
@@ -16,11 +16,13 @@ const {
 	listMaterials, //
 	uploadMaterial,
 } = require("./bucketManipulation");
+
 const {
 	extensionExtractor, //
 	generateLink,
 	returnEmoji,
 	returnFilter,
+	checkEmail,
 } = require("./utils");
 
 const app = new App({
@@ -30,16 +32,10 @@ const app = new App({
 	appToken: process.env.SLACK_SOCKET_TOKEN,
 });
 
-// const exapp = express();
-
-// exapp.get("/", (req, res) => {
-// 	res.send("Hello World!");
-// });
-
 app.command("/olar", async ({ ack, say }) => {
 	try {
 		await ack();
-		say(`olar`);
+		say(`olar test`);
 	} catch (error) {
 		console.log("err");
 		console.error(error);
@@ -85,9 +81,6 @@ app.command("/listar-materiais", async ({ command, ack, say }) => {
 });
 
 app.message("upload", async ({ payload, say }) => {
-	// console.log("================= Payload =================");
-	// console.log(payload);
-	// console.log("================= End Payload =================");
 	if (!payload.files.length) return;
 	say("Iniciando upload...");
 
@@ -135,11 +128,19 @@ app.message("upload", async ({ payload, say }) => {
 	}
 });
 
+app.command("/aluno", async ({ payload, say }) => {
+	let email = payload.text;
+	if (!checkEmail(email)) {
+		say("Por favor informe um email válido");
+	}
+	let user = await got(`https://nossomundoazul.com.br/api/usuarios/busca-aluno-publico/?email=${email}`);
+
+	console.log(user);
+
+	say(`user: ${user.nome}, ${user.email}, ${user.isAluno}, ${user.isAssinante}`);
+});
+
 (async () => {
 	await app.start(process.env.PORT);
 	console.log("⚡️ Bolt app started");
 })();
-
-// exapp.listen(process.env.PORT, () => {
-// 	console.log(`ExApp listening`);
-// });
