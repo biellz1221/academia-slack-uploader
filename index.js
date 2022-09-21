@@ -35,7 +35,8 @@ const app = new App({
 app.command("/olar", async ({ ack, say }) => {
 	try {
 		await ack();
-		say(`olar`);
+		say(`olar olar olar olar`);
+		console.log("rest");
 	} catch (error) {
 		console.log("err");
 		console.error(error);
@@ -136,7 +137,8 @@ app.command("/aluno", async ({ command, ack, say }) => {
 		if (!checkEmail(email)) {
 			say("Por favor informe um email válido");
 		}
-		const user = await got(`https://nossomundoazul.com.br/api/usuarios/busca-aluno-publico/?email=${email}`);
+		const u = await got(`https://nossomundoazul.com.br/api/usuarios/busca-aluno-publico/?email=${email}`);
+		const user = u.body;
 		console.log("======================== USER =========================");
 		console.log(user);
 		console.log("======================== USER =========================");
