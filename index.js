@@ -137,8 +137,8 @@ app.command("/aluno", async ({ command, ack, say }) => {
 		if (!checkEmail(email)) {
 			say("Por favor informe um email válido");
 		}
-		const u = await got(`https://nossomundoazul.com.br/api/usuarios/busca-aluno-publico/?email=${email}`);
-		const user = u.body;
+		const user = await got(`https://nossomundoazul.com.br/api/usuarios/busca-aluno-publico/?email=${email}`).json();
+		// const user = u.body;
 		console.log("======================== USER =========================");
 		console.log(user);
 		console.log("======================== USER =========================");
