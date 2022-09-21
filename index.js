@@ -132,25 +132,25 @@ app.message("upload", async ({ payload, say }) => {
 app.command("/aluno", async ({ command, ack, say }) => {
 	try {
 		await ack();
-		console.log("command", command);
+
 		const email = command.text;
+
 		if (!checkEmail(email)) {
 			say("Por favor informe um email válido");
 		}
-		const user = await got(`https://nossomundoazul.com.br/api/usuarios/busca-aluno-publico/?email=${email}`).json();
-		// const user = u.body;
-		console.log("======================== USER =========================");
-		console.log(user);
-		console.log("======================== USER =========================");
 
-		say(`user: ${user.nome}, ${user.email}, ${user.isAluno}, ${user.isAssinante}`);
+		const user = await got(`https://nossomundoazul.com.br/api/usuarios/busca-aluno-publico/?email=${email}`).json();
+
+		say(`🟢 Informações do Usuário 🟢\n👤 Nome: ${user.nome}\n📧 Email: ${user.email}\n👨‍🎓 É aluno? ${user.isAluno ? "✅" : "❌"}\n⭐️ É assinante? ${user.isAssinante ? "✅" : "❌"}`);
 	} catch (error) {
-		console.error("STATUS CODE:", error.response.statusCode);
+		console.error("======================== ERROR =========================");
+		console.error(error);
 		if (error.response.statusCode === 404) {
 			say("Este email não correspode a um usuário");
 		} else {
 			say("Houve um erro");
 		}
+		console.error("======================== ERROR =========================");
 	}
 });
 
