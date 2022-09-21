@@ -141,7 +141,7 @@ app.command("/aluno", async ({ command, ack, say }) => {
 
 		const user = await got(`https://nossomundoazul.com.br/api/usuarios/busca-aluno-publico/?email=${email}`).json();
 
-		say(`🟢 Informações do Usuário 🟢\n👤 Nome: ${user.nome}\n📧 Email: ${user.email}\n👨‍🎓 É aluno? ${user.isAluno ? "✅" : "❌"}\n⭐️ É assinante? ${user.isAssinante ? "✅" : "❌"}`);
+		say(`🟢 Informações do Usuário 🟢\n\n👤 Nome: ${user.nome}\n\n📧 Email: ${user.email}\n\n👨‍🎓 É aluno? ${user.isAluno ? "Sim" : "Não"}\n\n⭐️ É assinante? ${user.isAssinante ? "Sim" : "Não"}`);
 	} catch (error) {
 		console.error("======================== ERROR =========================");
 		console.error(error);
