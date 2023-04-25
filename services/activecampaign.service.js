@@ -19,10 +19,10 @@ exports.createLead = async (data) => {
 			"lastName": nome.split(" ").pop(),
 			"phone": telefone,
 			"fieldValues": [
-				{
-					"field": "22",
-					"value": relacao,
-				},
+				// {
+				// 	"field": "22",
+				// 	"value": relacao,
+				// },
 				...utms,
 			],
 		},
@@ -75,7 +75,7 @@ exports.insertTag = async (leadID) => {
 	const lead = {
 		contactTag: {
 			contact: leadID,
-			tag: "1222", //imersão 2023
+			tag: "1240", //imersão 2023
 		},
 	};
 
