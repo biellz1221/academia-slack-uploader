@@ -14,10 +14,10 @@ exports.createLead = async (data) => {
 
 	const lead = {
 		"contact": {
-			"email": email,
+			"email": email.trim(),
 			"firstName": nome.split(" ")[0],
-			"lastName": nome.split(" ").pop(),
-			"phone": telefone,
+			"lastName": nome.split(" ").pop() ? nome.split(" ").pop() : nome.split(" ")[0],
+			"phone": telefone.replaceAll("+", "").replaceAll("(", "").replaceAll(")", "").replaceAll("-", "").replaceAll(" ", ""),
 			"fieldValues": [
 				{
 					"field": "22",
