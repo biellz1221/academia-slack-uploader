@@ -1,7 +1,7 @@
 const axios = require("axios");
 
 exports.createLead = async (data) => {
-	const { email, nome, telefone, utmValues, relacao } = data;
+	const { email, nome, telefone, utmValues, relacao, tagid } = data;
 
 	const utms = [];
 
@@ -19,10 +19,10 @@ exports.createLead = async (data) => {
 			"lastName": nome.split(" ").pop(),
 			"phone": telefone,
 			"fieldValues": [
-				// {
-				// 	"field": "22",
-				// 	"value": relacao,
-				// },
+				{
+					"field": "22",
+					"value": relacao ? relacao : "",
+				},
 				...utms,
 			],
 		},
@@ -35,7 +35,9 @@ exports.createLead = async (data) => {
 			},
 		});
 
-		await this.insertTag(response.data.contact.id);
+		if (tagid) {
+			await this.insertTag(response.data.contact.id);
+		}
 
 		return {
 			status: "success",
