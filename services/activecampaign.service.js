@@ -36,7 +36,7 @@ exports.createLead = async (data) => {
 		});
 
 		if (tagid) {
-			await this.insertTag(response.data.contact.id);
+			await this.insertTag(response.data.contact.id, tagid);
 		}
 
 		return {
@@ -73,11 +73,11 @@ exports.searchLead = async (leadEmail) => {
 	}
 };
 
-exports.insertTag = async (leadID) => {
+exports.insertTag = async (leadID, tagid) => {
 	const lead = {
 		contactTag: {
 			contact: leadID,
-			tag: "1240", //imersão 2023
+			tag: tagid,
 		},
 	};
 
