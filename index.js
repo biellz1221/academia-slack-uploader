@@ -154,6 +154,27 @@ app.command("/aluno", async ({ command, ack, say }) => {
 	}
 });
 
+app.command("/qrcode", async ({ command, ack, say }) => {
+	try {
+		await ack();
+
+		const content = command.text;
+
+		if (!content) {
+			say("Por favor coloque o conteúdo do QR Code");
+		}
+
+		const user = await got(`https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=${content}`).json();
+
+		say(user);
+	} catch (error) {
+		console.error("======================== ERROR =========================");
+		console.error(error);
+		say(error.toString());
+		console.error("======================== ERROR =========================");
+	}
+});
+
 async function startBolt() {
 	await app.start(process.env.PORT);
 	console.log("⚡️ Bolt app started");
