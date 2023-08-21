@@ -166,8 +166,8 @@ app.command("/qrcode", async ({ command, ack, say }) => {
 
 		const user = await got(`https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=${content}`);
 
-		// say(`https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=${content}`);
-		say(user);
+		say(`https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=${content}`);
+		// say(user);
 	} catch (error) {
 		console.error("======================== ERROR =========================");
 		console.error(error);
