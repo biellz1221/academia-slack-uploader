@@ -1,5 +1,8 @@
 const axios = require("axios");
 
+//B42_ACTIVE_TOKEN
+//B42_ACTIVE_API_URL
+
 exports.createLead = async (data) => {
 	const { email, nome, telefone, utmValues, relacao, tagid } = data;
 
