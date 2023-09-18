@@ -176,6 +176,22 @@ app.command("/qrcode", async ({ command, ack, say }) => {
 	}
 });
 
+app.command("/lembrete", async ({ command, ack, say }) => {
+	try {
+		await ack();
+
+		const user = await got.post(`https://hook.us1.make.com/f1dow71snaetm0ky68430t7rvmhyq2mt`, { lembrete: "vc foi lembrado" });
+
+		say("Webhook enviado");
+		// say(user);
+	} catch (error) {
+		console.error("======================== ERROR =========================");
+		console.error(error);
+		say(error.toString());
+		console.error("======================== ERROR =========================");
+	}
+});
+
 async function startBolt() {
 	await app.start(process.env.PORT);
 	console.log("⚡️ Bolt app started");

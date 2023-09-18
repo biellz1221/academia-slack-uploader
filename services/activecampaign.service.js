@@ -103,30 +103,3 @@ exports.insertTag = async (leadID, tagid) => {
 		};
 	}
 };
-
-// {
-//     "fieldOptions": [
-//         {
-//             "title": "utm_source",
-//             "id": "18"
-//         },
-//         {
-//             "title": "utm_media",
-//             "id": "19"
-//         },
-//         {
-//             "title": "utm_campaign",
-//             "id": "20"
-//         },
-//         {
-//             "title": "utm_term",
-//             "id": "21"
-//         },
-//         {
-//             "title": "Relação com o TEA",
-//             "id": "22"
-//         }
-//     ]
-// }
-
-// ID DA TAG IMERSAO 23: 1222
