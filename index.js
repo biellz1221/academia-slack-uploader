@@ -180,7 +180,7 @@ app.command("/lembrete", async ({ command, ack, say }) => {
 	try {
 		await ack();
 
-		const user = await got.post(`https://hook.us1.make.com/f1dow71snaetm0ky68430t7rvmhyq2mt`, { lembrete: "vc foi lembrado" });
+		const user = await got.post(`https://hook.us1.make.com/f1dow71snaetm0ky68430t7rvmhyq2mt`, { lembrete: "vc foi lembrado", usuario: command.user_name, usuario_id: command.user_id });
 
 		say("Webhook enviado");
 		// say(user);
