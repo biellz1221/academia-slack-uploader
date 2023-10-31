@@ -1,4 +1,4 @@
-const { createLead, searchLead } = require("../services/activecampaign.service");
+const { createLead, searchLead, insertTagUsingEmail } = require("../services/activecampaign.service");
 
 exports.active = async (req, res) => {
 	const response = await createLead(req.body);
@@ -26,6 +26,21 @@ exports.activeSearch = async (req, res) => {
 	}
 	return res.status(200).json({
 		data: "Sucesso",
+		info: response.data,
+	});
+};
+
+exports.activeTagUsingEmail = async (req, res) => {
+	const response = await insertTagUsingEmail(req.body.email, req.body.tag);
+
+	if (response.status === "error") {
+		return res.status(500).json({
+			status: "error",
+			data: response.error,
+		});
+	}
+	return res.status(201).json({
+		data: "Lead inserido com sucesso",
 		info: response.data,
 	});
 };

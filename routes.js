@@ -9,4 +9,6 @@ router.get("/", async (req, res) => {
 router.post("/lead", IndexController.active);
 router.get("/search", IndexController.activeSearch);
 
+router.post("/tag-lead", IndexController.activeTagUsingEmail);
+
 module.exports = router;

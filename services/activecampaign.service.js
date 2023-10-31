@@ -103,3 +103,39 @@ exports.insertTag = async (leadID, tagid) => {
 		};
 	}
 };
+
+exports.insertTagUsingEmail = async (leadEmail, tagid) => {
+	try {
+		const leadR = await axios.get(`${process.env.ACTIVE_API_URL}/contacts?email=${leadEmail}`, {
+			headers: {
+				"Api-Token": process.env.ACTIVE_API_TOKEN,
+			},
+		});
+
+		if (response.data.contacts.length < 1) return;
+
+		const lead = {
+			contactTag: {
+				contact: leadR.data.contacts[0].id,
+				tag: tagid,
+			},
+		};
+
+		const response = await axios.post(`${process.env.ACTIVE_API_URL}/contactTags`, lead, {
+			headers: {
+				"Api-Token": process.env.ACTIVE_API_TOKEN,
+			},
+		});
+
+		return {
+			status: "success",
+			data: response.data,
+		};
+	} catch (error) {
+		console.log(error);
+		return {
+			status: "error",
+			error,
+		};
+	}
+};
