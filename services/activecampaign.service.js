@@ -112,7 +112,7 @@ exports.insertTagUsingEmail = async (leadEmail, tagid) => {
 			},
 		});
 
-		if (response.data.contacts.length < 1) return;
+		if (leadR.data.contacts.length < 1) return;
 
 		const lead = {
 			contactTag: {
